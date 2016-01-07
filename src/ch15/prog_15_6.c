@@ -32,6 +32,13 @@ int main(int argc, char const* argv[])
     close(fd[1]);
     // we don't need waitpid if we can guarantee that the child always dup2 before the parent exits;
     // if the parent exits before the child and nothing flows in from stdin, the child has to exit.
+    // What happens if we removed waitpid? Several of the followings will occur:
+    // - parent will surely write content of the specified file to the write end of pipe
+    // - parent exits
+    // - pager will read (or wait for input) from stdin, whose content is data written from write end of the pipe
+    // - SIGHUP is sent to child if parent exits before completion of child
+    // so depending on the order of occurrence of 2nd and 3rd item, this program can print initial part of the file
+    // or print nothing.
     if (waitpid(pid, NULL, 0) < 0)
       err_sys("waitpid error");
     exit(0);
