@@ -37,6 +37,8 @@ int cli_conn(const char *name) {
 
   memset(&sun, 0, sizeof(sun));
   sun.sun_family = AF_UNIX;
+  strcpy(sun.sun_path, name);
+  len = offsetof(struct sockaddr_un, sun_path) + strlen(name);
   if (connect(fd, (struct sockaddr *)&sun, len) < 0) {
     rval = -4;
     do_unlink = 1;

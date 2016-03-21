@@ -32,7 +32,7 @@ void loop(void) {
     }
 
     for ( i = 0; i <= maxi; i++) {
-      if ((clifd = serv_accept(listenfd, &uid)) < 0)
+      if ((clifd = client[i].fd) < 0)
         continue;
       if (FD_ISSET(clifd, &rset)) {
         if ((nread = read(clifd, buf, MAXLINE)) < 0) {
