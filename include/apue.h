@@ -130,4 +130,7 @@ void	TELL_CHILD(pid_t);
 void	WAIT_PARENT(void);
 void	WAIT_CHILD(void);
 
+#ifndef CMSG_LEN
+#define CMSG_LEN(l)             (__DARWIN_ALIGN32(sizeof(struct cmsghdr)) + (l))
+#endif
 #endif	/* _APUE_H */
