@@ -31,24 +31,25 @@ int recv_fd(int fd, ssize_t (*userfunc)(int, const void*, size_t)) {
       err_ret("connection closed by server");
       return(-1);
     }
-  }
-  for (ptr = buf; ptr < &buf[nr]; ){
-    if (*ptr++ == 0) {
-      if (ptr != &buf[nr-1])
-        err_dump("message format error");
-      status = *ptr &0xFF;
-      if (status == 0) {
-        if (msg.msg_controllen != CONTROLLEN)
-          err_dump("status = 0 but no fd");
-        newfd = *(int *)CMSG_DATA(cmptr);
-      } else {
-        newfd = -status;
+    for (ptr = buf; ptr < &buf[nr]; ){
+      if (*ptr++ == 0) {
+        if (ptr != &buf[nr-1])
+          err_dump("message format error");
+        status = *ptr &0xFF;
+        if (status == 0) {
+          if (msg.msg_controllen != CONTROLLEN)
+            err_dump("status = 0 but no fd");
+          newfd = *(int *)CMSG_DATA(cmptr);
+        } else {
+          newfd = -status;
+        }
+        nr -= 2;
       }
-      nr -= 2;
     }
+    printf("recv_fd almost finished\n");
+    if (nr > 0 && (*userfunc)(STDERR_FILENO, buf, nr) != nr)
+      return(-1);
+    if (status >= 0)
+      return(newfd);
   }
-  if (nr > 0 && (*userfunc)(STDERR_FILENO, buf, nr) != nr)
-    return(-1);
-  if (status >= 0)
-    return(newfd);
 }
