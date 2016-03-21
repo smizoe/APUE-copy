@@ -46,7 +46,6 @@ int recv_fd(int fd, ssize_t (*userfunc)(int, const void*, size_t)) {
         nr -= 2;
       }
     }
-    printf("recv_fd almost finished\n");
     if (nr > 0 && (*userfunc)(STDERR_FILENO, buf, nr) != nr)
       return(-1);
     if (status >= 0)
