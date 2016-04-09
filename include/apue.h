@@ -133,4 +133,7 @@ void	WAIT_CHILD(void);
 #ifndef CMSG_LEN
 #define CMSG_LEN(l)             (__DARWIN_ALIGN32(sizeof(struct cmsghdr)) + (l))
 #endif
+#ifndef SIGWINCH
+#define SIGWINCH 28
+#endif
 #endif	/* _APUE_H */
